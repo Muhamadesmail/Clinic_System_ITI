@@ -1,0 +1,95 @@
+﻿<body>
+
+    @RenderBody()
+
+    <a class="navbar-brand text-primary font-weight-bold" href="/">
+        <img src="@Url.Content("~/images/logo.jpeg")" alt="Logo" style="height:40px;" />
+        Royal Clinic
+    </a>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Link to open the ChatBot Modal -->
+    <a href="javascript:void(0)"
+       onclick="openChatBot()"
+       style="position: fixed; bottom: 20px; right: 20px; background-color: #3b5998; color: white; padding: 12px 16px; border-radius: 50px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9999;">
+        💬 Royal AI
+    </a>
+
+    <!-- Modal for ChatBot -->
+    <div id="chatBotModal" style="display: none; position: fixed; bottom: 60px; right: 20px; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9999; width: 400px; height: auto;">
+        <form id="chatForm" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <textarea id="userMessage" placeholder="Write here..." rows="4" style="width: 100%; resize: none; font-size: 14px; padding: 10px; border-radius: 10px; border: 1px solid #ccc;"></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="submit" style="background-color: #3b5998; color: white; padding: 10px 15px; border: none; border-radius: 10px; font-size: 14px; transition: 0.3s; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    Send
+                </button>
+                <button onclick="closeChatBot()" type="button" style="background-color: #ff6347; color: white; padding: 10px 15px; border: none; border-radius: 10px; font-size: 14px; transition: 0.3s; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    Close
+                </button>
+            </div>
+            <div style="margin-top: 15px;">
+                <input type="file" id="fileUpload" style="font-size: 12px; padding: 8px; border-radius: 10px; border: 1px solid #ccc; width: 100%;" />
+            </div>
+        </form>
+
+        <div id="chatResponse" style="margin-top: 10px; font-size: 14px; color: #333;"></div>
+    </div>
+
+    <script>
+        // Open the ChatBot modal
+        function openChatBot() {
+            document.getElementById("chatBotModal").style.display = "block";
+        }
+
+        // Close the ChatBot modal
+        function closeChatBot() {
+            document.getElementById("chatBotModal").style.display = "none";
+        }
+
+        // Handle the form submission
+                document.getElementById('chatForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const userMessage = document.getElementById('userMessage').value;
+            const sessionId = 'unique_session_id';  // يمكنك استخدام UUID أو أي طريقة لتوليد session_id فريد لكل محادثة
+
+            const formData = new FormData();
+            formData.append('session_id', sessionId);
+            formData.append('message', userMessage);
+
+            const fileUpload = document.getElementById('fileUpload').files[0];
+            if (fileUpload) {
+                formData.append('file', fileUpload);
+            }
+
+            const response = await fetch(`/ChatBot/GetResponseFromChatBot`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const responseText = await response.text();
+            document.getElementById('chatResponse').innerText = responseText;  // عرض الرد من الشات بوت
+        });
+
+    </script>
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/6894714da2b1f0191ffbeed1/1j2218f71';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
+</body>
+</html>

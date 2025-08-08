@@ -1,0 +1,103 @@
+﻿@model Clinic_System.BLL.ModelVM.AppointmentVM.UpdateAppointmentVM
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Edit Appointment";
+    var doctors = ViewBag.Doctors as List<Clinic_System.BLL.ModelVM.DoctorVM.GetAllDoctorsVM>;
+}
+
+<div class="edit-appointment-container">
+    <h3>Edit Appointment</h3>
+
+    <form asp-action="EditAppointment" method="post">
+        <input type="hidden" asp-for="ID" />
+        
+        <div>
+            <label for="doctor-dropdown">Select Doctor</label>
+            <select id="doctor-dropdown" asp-for="DoctorID" class="form-control" required>
+                <option value="" disabled>Select Doctor</option>
+                @foreach (var doctor in doctors)
+                {
+                    <option value="@doctor.DoctorID">@doctor.FullName</option>
+                }
+            </select>
+            <span asp-validation-for="DoctorID" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label for="appointment-date">Appointment Date</label>
+            <input type="date" id="appointment-date" asp-for="AppointmentDate" class="form-control" required />
+            <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label for="appointment-time">Appointment Time</label>
+            <input type="time" id="appointment-time" asp-for="AppointmentTime" class="form-control" required />
+            <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label for="patient-id">Patient ID (if applicable)</label>
+            <input type="text" id="patient-id" asp-for="PatientID" class="form-control" />
+            <span asp-validation-for="PatientID" class="text-danger"></span>
+        </div>
+
+        <button type="submit">Update Appointment</button>
+    </form>
+</div>
+<style>
+    .edit-appointment-container {
+        background-color: #f1f8ff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        border: 1px solid #cde1f9;
+    }
+
+        .edit-appointment-container h3 {
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #007bff;
+            text-align: center;
+        }
+
+        .edit-appointment-container select,
+        .edit-appointment-container input {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 12px;
+            border: 1px solid #007bff;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+            .edit-appointment-container select:focus,
+            .edit-appointment-container input:focus {
+                outline: none;
+                border-color: #0056b3;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+            }
+
+        .edit-appointment-container button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .edit-appointment-container button:hover {
+                background-color: #fff;
+                color: #007bff;
+                border: 1px solid #007bff;
+            }
+</style>
+
+
+<!-- Add your existing styles here -->

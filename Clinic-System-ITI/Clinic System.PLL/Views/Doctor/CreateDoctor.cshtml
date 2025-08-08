@@ -1,0 +1,141 @@
+﻿@model Clinic_System.BLL.ModelVM.DoctorVM.CreateDoctorVM
+@{
+    ViewData["Title"] = "CreateDoctor";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .form-container {
+        background-color: #2d53c633;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 700px;
+        margin: 0 auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .btn-primary {
+        padding: 10px 20px;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="container form-container">
+    <h2 class="text-center mb-4">Add New Doctor</h2>
+    @if (!ViewData.ModelState.IsValid)
+    {
+            <div class="alert alert-danger">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            </div>
+    }
+    <form asp-action="CreateDoctor" asp-controller="Doctor" method="post" enctype="multipart/form-data">
+
+        <!-- First Name -->
+        <div class="mb-3">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" asp-for="FirstName" placeholder="Enter first name">
+            <span class="text-danger" asp-validation-for="FirstName"></span>
+        </div>
+
+        <!-- Last Name -->
+        <div class="mb-3">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" asp-for="LastName" placeholder="Enter last name">
+            <span class="text-danger" asp-validation-for="LastName"></span>
+        </div>
+
+        <!-- Age -->
+        <div class="mb-3">
+            <label class="form-label">Age</label>
+            <input type="number" class="form-control" asp-for="Age" placeholder="Enter age">
+            <span class="text-danger" asp-validation-for="Age"></span>
+        </div>
+
+        <!-- Gender -->
+        <div class="mb-3">
+            <label class="form-label">Gender</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="Gender" value="Male">
+                <label class="form-check-label">Male</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="Gender" value="Female">
+                <label class="form-check-label">Female</label>
+            </div>
+            <span class="text-danger" asp-validation-for="Gender"></span>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" asp-for="PhoneNumber" placeholder="Enter phone number">
+            <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" asp-for="Email" placeholder="Enter email">
+            <span class="text-danger" asp-validation-for="Email"></span>
+        </div>
+
+@*         <!-- Password -->
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" asp-for="Password" placeholder="Enter password">
+            <span class="text-danger" asp-validation-for="Password"></span>
+        </div>
+ *@
+         <!-- Department -->
+        <div class="mb-3">
+            <label class="form-label">Department</label>
+            <select class="form-select" asp-for="DepartmentID" asp-items="ViewBag.Departments">
+                <option value="">Select department</option>
+            </select>
+            <span class="text-danger" asp-validation-for="DepartmentID"></span>
+        </div>
+
+        <!-- Shift -->
+        <div class="mb-3">
+            <label class="form-label">Shift</label>
+            <select class="form-select" asp-for="Shift">
+                <option value="" disabled selected>Select shift</option>
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+                <option value="Night">Night</option>
+            </select>
+            <span class="text-danger" asp-validation-for="Shift"></span>
+        </div>
+
+        <!-- Image -->
+        <div class="mb-3">
+            <label class="form-label">Image</label>
+            <input type="file" class="form-control" asp-for="ImageFile" accept="image/*">
+            <span class="text-danger" asp-validation-for="ImageFile"></span>
+        </div>
+
+        <!-- Session Price -->
+        <div class="mb-3">
+            <label class="form-label">Session Price</label>
+            <input type="number" class="form-control" asp-for="SessionPrice" placeholder="Enter session price">
+            <span class="text-danger" asp-validation-for="SessionPrice"></span>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" asp-for="Description" placeholder="Enter description"></textarea>
+            <span class="text-danger" asp-validation-for="Description"></span>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Add Doctor</button>
+        </div>
+    </form>
+</div>

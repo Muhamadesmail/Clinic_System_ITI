@@ -1,0 +1,276 @@
+﻿@using Clinic_System.BLL.ModelVM.Appointment
+@model SearchVM
+@{
+    ViewData["Title"] = "Search";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Profile</title>
+  <link rel="stylesheet" href="~/css/search.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css ">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.3.2/web-animations.min.js" integrity="sha512-oAY57i8MXmaOP7pAylNLnULAM4QLV3uGnvnXVY4zF229/zFzTvG2/5YIgH8iN8oZR2hnbkiDPd4JCJGaH4oG6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body>
+  <div class="loading-screen">
+    <i class="fa-solid fa-spinner fa-spin-pulse fa-3x"></i>
+    <p>Loading...</p>
+  </div>
+  <header>
+    <div class="logo-container">
+      <div class="logo">
+        <i class="fas fa-heartbeat icon"></i>
+        <div class="text">Royal Clinic</div>
+      </div>
+      <div class="text-outside">
+        Med<span>Link</span>
+      </div>
+    </div>
+    <nav class="navbar">
+            <a href="@Url.Action("Index", "Home")">Home</a>
+            <a href="@Url.Action("Index", "Home")#search-container">Book</a>
+            <a href="@Url.Action("Index", "Home")#about">About Us</a>
+            <a href="@Url.Action("Index", "Home")#ser-heading">Services</a>
+            <a href="@Url.Action("Index", "Home")#cont">FeedBack</a>
+
+    </nav>
+    <div class="righticons">
+      <div id="menubars" class="fas fa-bars"></div>
+      
+  </div>
+  </div>
+  </header>
+
+    <form method="post" asp-action="Search">
+  <div class="search-container" >
+    <div class="search-header">
+      <h2><i class="fas fa-user-md icon"></i>Book a Doctor</h2>
+      <p>Consultation or Procedure</p>
+    </div>
+
+            <div class="search-bar">
+                <div class="search-select-icon">
+                    <i class="fas fa-stethoscope icon"></i>
+                    <select class="search-select" name="departmentId">
+                        <option value="" disabled selected>Select Specialty</option>
+                        @if (ViewBag.Departments != null)
+                        {
+                            foreach (var department in (SelectList)ViewBag.Departments)
+                            {
+                                <option value="@department.Value">@department.Text</option>
+                            }
+                        }
+                        else
+                        {
+                            <option>No departments available</option>
+                        }
+                    </select>
+                </div>
+                <input type="text" name="doctorName" placeholder="Enter doctor name" class="search-input">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search icon"></i> Search
+                </button>
+            </div>
+        </div>
+    </form>
+    <form asp-action="Search" method="get">
+        @if (Model?.Doctors != null && Model.Doctors.Any())
+        {
+            @foreach (var doctor in Model.Doctors)
+            {
+                @if (doctor != null && doctor.User != null)
+                {
+                    <div class="doctor-container">
+                        <div class="doctor-header">
+                            @{
+                                string image = "DefaultDoctorProfilePhoto.png";
+                                if (doctor.Image is not null) image = doctor.Image;
+                            }
+                            <img src="~/imges/DoctorProfilePhoto/@image" alt="Doctor Photo">
+                            <div class="doctor-info">
+                                <h2>@doctor.User.FirstName @doctor.User.LastName</h2>
+                                <p>@doctor.Description</p>
+                            </div>
+                        </div>
+
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Time Slots</th>
+                                    <th>Book</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var group in doctor.Appointments.Where(a => !a.IsDeleted).GroupBy(a => a.AppointmentDate.Date))
+                                {
+                                    <tr>
+                                        <td>@group.Key.ToString("dddd")</td>
+                                        <td>
+                                            <select>
+                                                <option value="">Select Time</option>
+                                                @foreach (var slot in group)
+                                                {
+                                                    if (slot.IsBooked)
+                                                    {
+                                                        <option value="@slot.ID" disabled>
+                                                            @slot.AppointmentTime.ToString(@"hh\:mm") - Booked
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@slot.ID">
+                                                            @slot.AppointmentTime.ToString(@"hh\:mm") - Available
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="book-btn" onclick="window.location.href='@Url.Action("BookAppointment", "Appointment", new { appointmentId = group.FirstOrDefault().ID })'">Book</button>
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="doctor-details">
+                            <ul>
+                                <li><i class="fas fa-user-md"></i>@doctor.Description</li>
+                                <li><i class="fas fa-wallet"></i>Consultation Fee: @doctor.SessionPrice EGP</li>
+                                <li><i class="fas fa-phone"></i>@doctor.User.PhoneNumber - For Appointments</li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <p>@ViewBag.Message</p>
+        }
+    </form>
+
+  <footer>
+    <div class="container1">
+        <div class="row">
+              <div class="col" id="company">
+                <div class="logo-container">
+                    <div class="logo">
+                        <i class="fas fa-heartbeat icon"></i>
+                        <div class="text">Royalclinic</div>
+                    </div>
+                    <div class="text-outside">
+                        Med<span>Link</span>
+                    </div>
+                </div>
+                  <p>
+                    We are specialized in designings, make your business a brand.
+                    Try our premium services.
+                  </p>
+                  <div class="social">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                  </div>
+              </div>
+
+
+              <div class="col" id="useful-links">
+                 <h3>Links</h3>
+                 <div class="links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html #search-container">Book</a>
+                    <a href="index.html #about">About Us</a>
+                    <a href="index.html #ser-heading">Services</a>
+                    <a href="index.html contact.html">FeedBack</a>
+
+                 </div>
+              </div>
+
+              <div class="col" id="contact">
+                  <h3>Contact</h3>
+                  <div class="contact-details">
+                     <i class="fa-solid fa-location-dot"></i>
+                     
+                     <p>Cairo,Egypt</p>
+                  </div>
+                  <div class="contact-details">
+                     <i class="fa-solid fa-phone"></i>
+                     <p>01279483363</p>
+                  </div>
+                  <div class="contact-details">
+                    <i class="fa-solid fa-envelope"></i>
+                     <p>
+                        Royalclinic@gmail.com
+                    </p>
+                  </div>
+              </div>
+         
+        </div>
+    </div>
+ </footer>
+@*     <script>
+        function bookAppointment(appointmentId) {
+            if (!confirm("Are you sure you want to book this appointment?")) {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("BookAppointment", "Appointment")',
+                type: 'POST',
+                data: {
+                    appointmentId: appointmentId,
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert("Booked successfully");
+                        // Disable the button and change its text
+                        let button = document.querySelector(`button[onclick="bookAppointment(${appointmentId})"]`);
+                        button.disabled = true;
+                        button.innerText = "Booked";
+                    } else {
+                        alert("Error booking appointment: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while trying to book the appointment. Please try again later.");
+                }
+            });
+        }
+    </script> *@
+
+
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    const loadingScreen = document.querySelector('.loading-screen');
+  
+    // Simulate some loading time (replace with your actual loading logic)
+    setTimeout(() => {
+      loadingScreen.classList.add('hidden');
+    }, 2000); // Adjust timeout as needed (in milliseconds)
+  });
+
+
+         let menubar = document.querySelector('#menubars');
+            let navbar  = document.querySelector('.navbar');
+            
+            menubar.onclick = () =>{
+                menubar.classList.toggle('fa-times');
+                navbar.classList.toggle('active');
+            }
+
+
+
+</script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</body>
+</html>

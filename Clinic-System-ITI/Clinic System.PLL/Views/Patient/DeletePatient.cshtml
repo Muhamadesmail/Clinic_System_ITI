@@ -1,0 +1,15 @@
+﻿@using Clinic_System.BLL.ModelVM.PatientVM
+@model DeletePatientVM
+@{
+    ViewData["Title"] = "DeletePatient";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div>
+    <h2>Delete Patient</h2>
+    <p>Are you sure you want to delete @Model.FullName?</p>
+    <form method="post" asp-action="DeletePatient">
+        <input type="hidden" name="PatientID" value="@Model.PatientID" />
+        <button type="submit">Delete</button>
+    </form>
+</div>
+

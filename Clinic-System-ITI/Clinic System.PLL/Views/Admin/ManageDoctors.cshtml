@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Clinic_System.BLL.ModelVM.DoctorVM.GetAllDoctorsVM>
+
+@{
+    ViewData["Title"] = "Manage Doctors";
+}
+
+<h2>Manage Doctors</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Specialization</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doctor in Model)
+        {
+            <tr>
+                <td>@doctor.DoctorID</td>
+                <td>@doctor.FirstName @doctor.LastName</td>
+                <td>@doctor.Shift</td>  @* لو التخصص مش موجود *@
+                <td>
+                    <a asp-controller="Doctor" asp-action="EditDoctor" asp-route-id="@doctor.DoctorID" class="btn btn-warning btn-sm">Edit</a>
+                    <form asp-controller="Doctor" asp-action="DeleteDoctor" method="post" style="display:inline;">
+                        <input type="hidden" name="ID" value="@doctor.DoctorID" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Doctor" asp-action="CreateDoctor" class="btn btn-success">Add New Doctor</a>

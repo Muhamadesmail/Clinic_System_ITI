@@ -1,0 +1,105 @@
+﻿:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f5f7fa;
+    --text-color: #333;
+    --light-text-color: #6c757d;
+    --accent-color: #ff6b6b;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.patient-info-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.patient-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+}
+
+.info-text {
+    color: var(--light-text-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.header-text {
+    color: var(--text-color);
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+    .btn-primary:hover {
+        background-color: #3a7ac8;
+        border-color: #3a7ac8;
+    }
+
+.btn-danger {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+    .btn-danger:hover {
+        background-color: #ff5252;
+        border-color: #ff5252;
+    }
+
+.nav-pills .nav-link.active {
+    background-color: var(--primary-color);
+}
+
+.table {
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table thead th {
+        background-color: var(--primary-color);
+        color: #ffffff;
+        border-color: #3a7ac8;
+        text-align: center;
+        font-weight: bold;
+    }
+
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .patient-info-card {
+        padding: 1rem;
+    }
+
+    .patient-photo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+        .btn-group .btn {
+            margin-bottom: 0.5rem;
+        }
+}

@@ -1,0 +1,80 @@
+﻿/* Documentation: https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification */
+
+/* Navbar Brand */
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-word;
+}
+
+/* General Link Styling */
+a {
+    color: #4E73DF;
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #2c4bbd;
+        text-decoration: underline;
+    }
+
+/* Primary Button Styling */
+.btn-primary {
+    color: #fff;
+    background-color: #4E73DF;
+    border-color: #4E73DF;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+    .btn-primary:hover {
+        background-color: #2c4bbd;
+        border-color: #2c4bbd;
+    }
+
+/* Nav Pills Active Link */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #4E73DF;
+    border-color: #4E73DF;
+    border-radius: 6px;
+}
+
+/* Borders */
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Shadow */
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+/* Policy Button */
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+    padding: 10px 20px;
+    background-color: #4E73DF;
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    text-align: center;
+    font-size: 0.9rem;
+}

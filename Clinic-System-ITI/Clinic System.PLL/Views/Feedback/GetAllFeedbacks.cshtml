@@ -1,0 +1,43 @@
+﻿@using Clinic_System.BLL.ModelVM.FeedBackVM
+@model List<GetAllFeedbacksVM>
+@{
+    ViewData["Title"] = "GetAllFeedbacks";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.5/css/dataTables.dataTables.css">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.5/js/dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.3.1/luxon.min.js"></script>
+<table id="feedback" class="ui celled table" style="width:100%">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Content</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var feedback in Model)
+        {
+            <tr>
+                <td>@feedback.ID</td>
+                <td>@feedback.Name</td>
+                <td>@feedback.Email</td>
+                <td>@feedback.Content</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="window.location.href='@Url.Action("DeleteFeedback", "Feedback")'">
+                        
+                        <i class="fas fa-trash-alt"></i> Remove
+                    </button>
+                </td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
+
+<script>
+    new DataTable('#feedback');
+</script>

@@ -1,0 +1,587 @@
+@using Clinic_System.BLL.ModelVM.FeedBackVM
+@model AddFeedbackVM
+@using System.Security.Claims;
+@using Clinic_System.BLL.Helper;
+ @using Microsoft.AspNetCore.Identity;
+@using Clinic_System.DAL.Entities
+@using Clinic_System.PLL.Controllers
+
+@inject SignInManager<User> signInManager
+
+
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal clinic</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css ">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.3.2/web-animations.min.js" integrity="sha512-oAY57i8MXmaOP7pAylNLnULAM4QLV3uGnvnXVY4zF229/zFzTvG2/5YIgH8iN8oZR2hnbkiDPd4JCJGaH4oG6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.1.0/uicons-thin-rounded/css/uicons-thin-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="stylesheet" href="~/css/index.css">
+
+
+</head>
+<style>
+    .home-right-content {
+        margin: 0; /* Remove margin */
+        padding: 0; /* Remove padding */
+    }
+
+    .medical-image {
+        display: block; /* Ensure it behaves like a block element */
+        margin: 0; /* Remove margin */
+        padding: 0; /* Remove padding */
+        width: 100%; /* Optional: make the image responsive */
+        height: auto; /* Maintain aspect ratio */
+    }
+</style>
+<body>
+    <div id="feedbackMessage" style="display:none;"></div>
+
+    <div class="loading-screen">
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-heartbeat icon"></i>
+                <div class="text">Royal Clinic</div>
+            </div>
+            <div class="text-outside">
+                Royal<span>clinic</span>
+            </div>
+        </div>
+    </div>
+    <header>
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fas fa-heartbeat icon"></i>
+                <div class="text">Royal Clinic</div>
+            </div>
+            <div class="text-outside">
+                Royal<span>Clinic</span>
+            </div>
+        </div>
+
+
+
+
+
+
+        @*
+        @if (signInManager.IsSignedIn(User))
+        {
+        <li class="nav-item">
+        <form asp-controller="Account" asp-action="Logout" method="post">
+        <button type="submit" class="nav-link btn btn-link py-0">
+        Logout
+        </button>
+        </form>
+        </li>
+
+        <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangePassword">Change Password </a>
+        </li>
+
+        <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@User.Identity.Name </a>
+        </li>
+        @if (User.IsInRole("Admin"))
+        {
+        <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="AddRole"> Add Role  </a>
+        </li>
+        }
+        }
+
+        else
+        {
+        <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Sign In</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Registerion">Register</a>
+        </li>
+        }
+
+
+
+        *@
+
+
+        @if (signInManager.IsSignedIn(User))
+        {
+            Claim ImageClaim = User.Claims.FirstOrDefault(c => c.Type == "UserImage");
+
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @if (ImageClaim != null)
+                    {
+                        <img class="rounded-circle" width="50px" src="~/imges/PatientProfilePhoto/@ImageClaim.Value">
+                    }
+                    @User.Identity.Name
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+
+                    @if (!User.IsInRole("Admin"))
+                    {
+                        <a class="dropdown-item" asp-action="Profile" asp-controller="Patient">Profile</a>
+                    }
+
+                    <a class="dropdown-item" asp-action="ChangePassword" asp-controller="Account">Change Password</a>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="dropdown-item" asp-action="Index" asp-controller="Admin">Admin</a>
+                    }
+
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                        <button type="submit" class="dropdown-item" style="color: #dc3545;">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2" style="color: #dc3545;"></i>
+                            Logout
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        
+
+            @*
+
+        @if (User.IsInRole("Admin"))
+        {
+
+        <nav class="navbar" style="position:relative; left:640px;">
+
+        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index"> Admin  </a>
+
+        </nav>
+
+        }
+
+
+        *@
+
+
+        }
+
+
+
+
+
+
+
+
+        <nav class="navbar">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a href="#search-container">Book</a>
+            <a href="#about">About Us</a>
+            <a href="#ser-heading">Services</a>
+            <a href="#cont">FeedBack</a>
+
+        </nav>
+
+        <div class="righticons">
+            <div id="menubars" class="fas fa-bars"></div>
+
+        </div>
+    </header>
+
+    <div id="scroll-to-top" class="scroll-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <div class="main-home">
+
+        <div class="home">
+            <div class="home-left-content">
+                <span>Welcome To Royal Clinic Website</span>
+                <h2>
+                    Simplify your booking appointments with ease
+                    <br>
+                </h2>
+                <p class="lorem">
+                    Our platform allows you to book appointments, choose departments,
+                    and select doctors quickly. Create your account now for a smooth healthcare.
+                </p>
+
+                @if (signInManager.IsSignedIn(User))
+                {
+
+                }
+                else{
+                <div class="home-btn">
+                    <a asp-action="Login" asp-controller="Account">Login</a>
+                    <a class="homebtnsec" asp-action="Registerion" asp-controller="Account">SignUp</a>
+                </div>
+                }
+
+
+
+
+            </div>
+            <span id="search-container"></span>
+
+            <div class="home-right-content">
+                <img src="@Url.Content("~/images/medical.jpg")" alt="" class="medical-image">
+            </div>
+
+        </div>
+    </div>
+    <form method="post" asp-action="Search">
+        <div class="search-container">
+            <div class="search-header">
+                <h2><i class="fas fa-user-md icon"></i>Book a Doctor</h2>
+                <p>Consultation or Procedure</p>
+            </div>
+
+            <div class="search-bar">
+                <div class="search-select-icon">
+                    <i class="fas fa-stethoscope icon"></i>
+                    <select class="search-select" name="departmentId">
+                        <option value="" disabled selected>Select Specialty</option>
+                        @if (ViewBag.Departments != null)
+                        {
+                            foreach (var department in (SelectList)ViewBag.Departments)
+                            {
+                                <option value="@department.Value">@department.Text</option>
+                            }
+                        }
+                        else
+                        {
+                            <option>No departments available</option>
+                        }
+                    </select>
+                </div>
+                <input type="text" name="doctorName" placeholder="Enter doctor name" class="search-input">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search icon"></i> Search
+                </button>
+            </div>
+        </div>
+    </form>
+    <div id="about" class="main-about">
+        <div class="about-heading">About Us</div>
+
+        <div class="inner-main-about">
+            <div class="about-inner-content-left">
+                <img src="/imges/han.jpeg" alt="">
+            </div>
+
+            <div class="about-inner-content">
+                <div class="about-right-content">
+                    <h2> Welcome to our Royal clinic website!</h2>
+                    <p>A cutting-edge platform designed to simplify bookings and streamline your healthcare experience.</p>
+                    <h1>
+                        Our Story
+                    </h1>
+                    <p class="aboutsec-content">
+                        Royal Clinic is a modern dental clinic set to open in Samalout, Egypt in September 2025.
+                        Founded by two expert dentists, the clinic aims to provide high-quality dental care through a seamless and convenient appointment booking experience.
+                        With a focus on patient comfort and cutting-edge technology, Royal Clinic is dedicated to making every visit smooth, personalized, and stress-free.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ser-heading" id="ser-heading">Services</div>
+
+    <div class="technology" id="services">
+        <div class="main-technology">
+            <div class="inner-technology">
+                <span></span>
+                <i class="fi fi-tr-user-injured"></i>
+                <h2>Patient Profiles: </h2>
+                <p>
+                    Patients can create and manage their profiles, including personal information and appointment history.
+
+                </p>
+            </div>
+
+
+            <a asp-action="Index" asp-controller="Doctor">
+                <div class="inner-technology">
+                    <span></span>
+                    <i class="fi fi-tr-user-md"></i>
+                    <h2>Doctor’s profiles:</h2>
+                    <p>
+                        Doctors have individual profiles visible to patients for contact and appointment scheduling.
+
+                    </p>
+                </div>
+            </a>
+
+            <div class="inner-technology">
+                <span></span>
+                <i class="fi fi-tr-admin-alt"></i>
+                <h2>Admin:</h2>
+                <p>
+                    Admins manage doctors and appointments,
+                    oversee profiles, and monitor bookings and payment statuses.
+                </p>
+            </div>
+            <div class="inner-technology">
+                <span></span>
+                <i class="fi fi-rr-alarm-plus"></i>
+                <h2>Appointment Booking:  </h2>
+                <p>
+                    Patients can book appointments by selecting departments, doctors, and preferred time slots.
+                </p>
+            </div>
+            <div class="inner-technology">
+                <span></span>
+                <i class="fi fi-tr-badge-dollar"></i>
+                <h2>Payment Integration: </h2>
+                <p>
+                    Secure payment options are available to complete your booking process.
+                </p>
+            </div>
+            <div class="inner-technology">
+                <span></span>
+                <i class="fi fi-rr-feedback-hand"></i>
+                <h2>Feedback:</h2>
+                <p>
+                    Users can submit their name, email, and message as feedback,
+                    which is sent to the admin for review and action.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <section class="contact" id="cont">
+        <div class="content">
+            <h2>FeedBack</h2>
+
+        </div>
+
+        <div class="container">
+            <div class="contactInfo">
+                <div class="box">
+                    <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+                    <div class="text">
+                        <h3>Address</h3>
+                        <p>Samalut,Minia,Egypt</p>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="icon"><i class="fa-solid fa-envelope"></i></div>
+                    <div class="text">
+                        <h3>Email</h3>
+                        <p>denroyalclinic@gmail.com</p>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="icon"><i class="fa-solid fa-phone"></i></div>
+                    <div class="text">
+                        <h3>Phone</h3>
+                        <p>01005226108</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contactForm">
+                <form asp-action="Feedback" asp-controller="Home" id="feedbackForm" method="post">
+                    <h2 style="color: #007bff; margin-bottom: 20px;">Send Message</h2>
+
+                    <div class="inputBox">
+                        <input asp-for="Name" type="text" required id="name" style="border: 1px solid #007bff; padding: 10px; border-radius: 5px;">
+                        <span asp-for="Name" style="color: #666;">Name</span>
+                        <span asp-validation-for="Name" style="color: red;"></span>
+                    </div>
+
+                    <div class="inputBox">
+                        <input asp-for="Email" type="email" required id="email" style="border: 1px solid #007bff; padding: 10px; border-radius: 5px;">
+                        <span asp-for="Email" style="color: #666;">Email</span>
+                        <span asp-validation-for="Email" style="color: red;"></span>
+                    </div>
+
+                    <div class="inputBox">
+                        <textarea asp-for="Content" required id="content" style="border: 1px solid #007bff; padding: 10px; border-radius: 5px; resize: vertical; min-height: 100px;"></textarea>
+                        <span asp-for="Content" style="color: #666;">Type Your Message...</span>
+                        <span asp-validation-for="Content" style="color: red;"></span>
+                    </div>
+
+                    <div class="inputBox">
+                        <input type="submit" value="Send" id="feed"
+                               style="background-color: #007bff; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s ease;"
+                               onmouseover="this.style.backgroundColor='white'; this.style.color='black';"
+                               onmouseout="this.style.backgroundColor='#007bff'; this.style.color='white';" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </section>
+    <footer>
+        <div class="container1">
+            <div class="row">
+                <div class="col" id="company">
+                    <div class="logo-container">
+                        <div class="logo">
+                            <i class="fas fa-heartbeat icon"></i>
+                            <div class="text">Royal clinic</div>
+                        </div>
+                        <div class="text-outside">
+                            Royal<span>Clinic</span>
+                        </div>
+                    </div>
+                    <p>
+                        We specialize in dental care turning your smile into a brand.
+                        Experience our premium services today.
+                    </p>
+                    <div class="social">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+
+                <div class="col" id="useful-links">
+                    <h3>Links</h3>
+                    <div class="links">
+
+
+
+                        <a asp-controller="Home" asp-action="Index">Home</a>
+                        <a href="#search-container">Book</a>
+                        <a href="#about">About Us</a>
+                        <a href="#ser-heading">Services</a>
+                        <a href="#cont">FeedBack</a>
+
+
+                  @*       <a href="index.html">Home</a>
+                        <a href="#ser-heading">Book</a>
+
+                        <a href="#about">About Us</a>
+                        <a href="#ser-heading">Services</a>
+                        <a href="contact.html">FeedBack</a>
+ *@
+                    </div>
+                </div>
+
+                <div class="col" id="contact">
+                    <h3>Contact</h3>
+                    <div class="contact-details">
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        <p>Samalut,Minia,Egypt</p>
+                    </div>
+                    <div class="contact-details">
+                        <i class="fa-solid fa-phone"></i>
+                        <p>01005226108</p>
+                    </div>
+                    <div class="contact-details">
+                        <i class="fa-solid fa-envelope"></i>
+                        <p>
+                            denroyalclinic@gmail.com
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+
+        let menubar = document.querySelector('#menubars');
+        let navbar = document.querySelector('.navbar');
+
+        menubar.onclick = () => {
+            menubar.classList.toggle('fa-times');
+            navbar.classList.toggle('active');
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const loadingScreen = document.querySelector('.loading-screen');
+            document.body.style.overflow = 'hidden';
+            document.body.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                loadingScreen.style.opacity = 0;
+                document.body.style.overflow = '';
+                document.body.style.pointerEvents = '';
+
+            }, 1000);
+        });
+
+
+
+        const scrollToTopBtn = document.getElementById('scroll-to-top');
+        const contactSection = document.getElementById('about');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY >= contactSection.offsetTop) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            $(document).ready(function () {
+                $('#feed').on('click', function (event) {
+                    event.preventDefault();
+
+                    var name = $('#name').val();
+                    var email = $('#email').val();
+                    var content = $('#content').val();
+
+                    $.ajax({
+                        url: '/Home/Feedback',
+                        method: 'POST',
+                        data: {
+                            Name: name,
+                            Email: email,
+                            Content: content
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                alert(response.message); // Success message
+                                $('#name').val('');
+                                $('#email').val('');
+                                $('#content').val('');
+                            } else {
+                                alert(response.message); // Error message from the server
+                            }
+                        },
+                        error: function (error) {
+                            alert('An error occurred. Please try again.');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+
+
+</body>
+</html>
