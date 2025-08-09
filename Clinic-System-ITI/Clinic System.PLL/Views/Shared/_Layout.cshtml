@@ -1,10 +1,243 @@
 ﻿<body>
 
+    <style>
+        /* --- General Page Styles (from previous step) --- */
+        .navbar-brand-custom {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: #1a2c4e;
+            font-weight: bold;
+        }
+
+            .navbar-brand-custom img {
+                height: 40px;
+                margin-right: 10px;
+            }
+
+            .navbar-brand-custom span {
+                font-size: 22px;
+                font-family: 'Segoe UI', sans-serif;
+            }
+
+        /* --- Floating Chat Button (FAB) Styles --- */
+        .chat-fab {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            width: 140px;
+            height: 55px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+            .chat-fab:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+                background: linear-gradient(45deg, #0069d9, #004da2);
+                color: white;
+                text-decoration: none;
+            }
+
+        /* --- Chat Modal Styles --- */
+        #chatBotModal {
+            position: fixed;
+            bottom: 95px;
+            right: 25px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            width: 400px;
+            max-width: 90vw;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column; /* Stack children vertically */
+            height: 500px; /* Give the modal a fixed height */
+            opacity: 0;
+            transform: translateY(20px);
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+        }
+
+            #chatBotModal.show {
+                opacity: 1;
+                transform: translateY(0);
+                visibility: visible;
+            }
+
+        /* Modal Header */
+        .chat-modal-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0; /* Prevent header from shrinking */
+        }
+
+        .chat-modal-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: #343a40;
+        }
+
+        .chat-close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6c757d;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 5px;
+            transition: color 0.2s;
+        }
+
+            .chat-close-btn:hover {
+                color: #343a40;
+            }
+
+        /* --- NEW: Chat Messages Area --- */
+        .chat-messages {
+            flex-grow: 1; /* Allow this area to grow and fill available space */
+            overflow-y: auto; /* Enable scrolling for messages */
+            padding: 20px;
+            background-color: #f1f3f5;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-message {
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            align-self: flex-end; /* Align to the right */
+            background-color: #007bff;
+            color: white;
+            border-bottom-right-radius: 4px; /* Creates a "tail" */
+        }
+
+        .bot-message {
+            align-self: flex-start; /* Align to the left */
+            background-color: #e9ecef;
+            color: #343a40;
+            border-bottom-left-radius: 4px; /* Creates a "tail" */
+        }
+
+        /* --- NEW: Typing Indicator --- */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .typing-indicator span {
+                height: 8px;
+                width: 8px;
+                background-color: #adb5bd;
+                border-radius: 50%;
+                animation: bounce 1.4s infinite ease-in-out both;
+            }
+
+                .typing-indicator span:nth-child(1) {
+                    animation-delay: -0.32s;
+                }
+
+                .typing-indicator span:nth-child(2) {
+                    animation-delay: -0.16s;
+                }
+
+        @@keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1.0);
+            }
+        }
+
+        /* Modal Form Area */
+        .chat-modal-form-container {
+            padding: 15px 20px;
+            border-top: 1px solid #e9ecef;
+            background-color: #fff;
+            flex-shrink: 0; /* Prevent form from shrinking */
+        }
+
+        #chatForm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-textarea {
+            flex-grow: 1;
+            resize: none;
+            font-size: 15px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
+            height: 44px; /* Start with a single line height */
+            max-height: 100px; /* Allow it to grow to a few lines */
+        }
+
+            .chat-textarea:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+                outline: none;
+            }
+
+        .chat-btn-send {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+            .chat-btn-send:hover {
+                background-color: #0056b3;
+            }
+
+    </style>
+
     @RenderBody()
 
-    <a class="navbar-brand text-primary font-weight-bold" href="/">
-        <img src="@Url.Content("~/images/logo.jpeg")" alt="Logo" style="height:40px;" />
-        Royal Clinic
+    <!-- Brand (now with a class) -->
+    <a class="navbar-brand-custom" href="/">
+        <img src="@Url.Content("~/images/logo.jpeg")" alt="Logo" />
+        <span>Royal Clinic</span>
     </a>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -12,84 +245,138 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
-    <!-- Link to open the ChatBot Modal -->
-    <a href="javascript:void(0)"
-       onclick="openChatBot()"
-       style="position: fixed; bottom: 20px; right: 20px; background-color: #3b5998; color: white; padding: 12px 16px; border-radius: 50px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9999;">
-        💬 Royal AI
+    <!-- Floating ChatBot Link -->
+    <a onclick="openChatBot()" class="chat-fab">
+        <span>💬</span> Royal AI
     </a>
 
     <!-- Modal for ChatBot -->
-    <div id="chatBotModal" style="display: none; position: fixed; bottom: 60px; right: 20px; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9999; width: 400px; height: auto;">
-        <form id="chatForm" enctype="multipart/form-data">
-            @Html.AntiForgeryToken()
-            <textarea id="userMessage" placeholder="Write here..." rows="4" style="width: 100%; resize: none; font-size: 14px; padding: 10px; border-radius: 10px; border: 1px solid #ccc;"></textarea>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button type="submit" style="background-color: #3b5998; color: white; padding: 10px 15px; border: none; border-radius: 10px; font-size: 14px; transition: 0.3s; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    Send
-                </button>
-                <button onclick="closeChatBot()" type="button" style="background-color: #ff6347; color: white; padding: 10px 15px; border: none; border-radius: 10px; font-size: 14px; transition: 0.3s; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    Close
-                </button>
-            </div>
-            <div style="margin-top: 15px;">
-                <input type="file" id="fileUpload" style="font-size: 12px; padding: 8px; border-radius: 10px; border: 1px solid #ccc; width: 100%;" />
-            </div>
-        </form>
+    <div id="chatBotModal">
+        <!-- Header -->
+        <div class="chat-modal-header">
+            <span class="chat-modal-title">Royal AI Assistant</span>
+            <button class="chat-close-btn" onclick="closeChatBot()" type="button">&times;</button>
+        </div>
 
-        <div id="chatResponse" style="margin-top: 10px; font-size: 14px; color: #333;"></div>
+        <!-- NEW: Messages Area -->
+        <div id="chatMessages" class="chat-messages">
+            <div class="chat-message bot-message">
+                Hello! I am the Royal AI assistant. How can I help you today?
+            </div>
+        </div>
+
+        <!-- Form Area -->
+        <div class="chat-modal-form-container">
+            <form id="chatForm" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <!-- I've removed the file upload for this simpler design, you can add it back if needed -->
+                <textarea id="userMessage" class="chat-textarea" placeholder="Type a message..." rows="1"></textarea>
+                <button type="submit" class="chat-btn-send" title="Send">➤</button>
+            </form>
+        </div>
     </div>
 
     <script>
+        const chatModal = document.getElementById("chatBotModal");
+        const chatMessagesContainer = document.getElementById("chatMessages");
+        const chatForm = document.getElementById('chatForm');
+        const userMessageInput = document.getElementById('userMessage');
+
         // Open the ChatBot modal
         function openChatBot() {
-            document.getElementById("chatBotModal").style.display = "block";
+            chatModal.classList.add("show");
+            userMessageInput.focus();
         }
 
         // Close the ChatBot modal
         function closeChatBot() {
-            document.getElementById("chatBotModal").style.display = "none";
+            chatModal.classList.remove("show");
+        }
+
+        // --- NEW: Function to add a message bubble to the chat ---
+        function addMessageToChat(text, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', `${sender}-message`);
+            messageElement.innerText = text;
+            chatMessagesContainer.appendChild(messageElement);
+
+            // Scroll to the bottom to see the new message
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
+
+        // --- NEW: Function to show/hide the typing indicator ---
+        function showTypingIndicator() {
+            const indicatorElement = document.createElement('div');
+            indicatorElement.classList.add('chat-message', 'bot-message');
+            indicatorElement.id = 'typing-indicator';
+            indicatorElement.innerHTML = `
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+            chatMessagesContainer.appendChild(indicatorElement);
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
         }
 
         // Handle the form submission
-                document.getElementById('chatForm').addEventListener('submit', async function (e) {
+        chatForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const userMessage = document.getElementById('userMessage').value;
-            const sessionId = 'unique_session_id';  // يمكنك استخدام UUID أو أي طريقة لتوليد session_id فريد لكل محادثة
+            const userMessage = userMessageInput.value.trim();
+            if (!userMessage) return; // Don't send empty messages
 
+            // 1. Add user's message to chat UI
+            addMessageToChat(userMessage, 'user');
+            userMessageInput.value = ''; // Clear input field
+
+            // 2. Show typing indicator
+            showTypingIndicator();
+
+            // 3. Prepare and send data to the server
+            const sessionId = 'unique_session_id'; // Replace with a real session ID generator
             const formData = new FormData();
             formData.append('session_id', sessionId);
             formData.append('message', userMessage);
 
-            const fileUpload = document.getElementById('fileUpload').files[0];
-            if (fileUpload) {
-                formData.append('file', fileUpload);
+            try {
+                const response = await fetch(`/ChatBot/GetResponseFromChatBot`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+
+                const responseData = await response.json();
+
+                // 4. Remove typing indicator
+                removeTypingIndicator();
+
+                // 5. Add bot's response to chat UI
+                addMessageToChat(responseData.response, 'bot');
+
+            } catch (error) {
+                console.error('Error fetching chat response:', error);
+                removeTypingIndicator();
+                addMessageToChat("Sorry, I'm having trouble connecting. Please try again later.", 'bot');
             }
-
-            const response = await fetch(`/ChatBot/GetResponseFromChatBot`, {
-                method: 'POST',
-                body: formData,
-            });
-
-            const responseText = await response.text();
-            document.getElementById('chatResponse').innerText = responseText;  // عرض الرد من الشات بوت
         });
 
+        // Allow sending message with Enter key (and new line with Shift+Enter)
+        userMessageInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevents adding a new line
+                chatForm.requestSubmit(); // Submits the form
+            }
+        });
     </script>
 
-    <!--Start of Tawk.to Script-->
-    <script type="text/javascript">
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-        (function(){
-        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;
-        s1.src='https://embed.tawk.to/6894714da2b1f0191ffbeed1/1j2218f71';
-        s1.charset='UTF-8';
-        s1.setAttribute('crossorigin','*');
-        s0.parentNode.insertBefore(s1,s0);
-        })();
-    </script>
-    <!--End of Tawk.to Script-->
 </body>
-</html>
